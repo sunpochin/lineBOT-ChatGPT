@@ -2,12 +2,15 @@ require('dotenv').config();
 
 const line = require('@line/bot-sdk');
 const express = require('express');
-const { Configuration, OpenAIApi } = require('openai');
+// const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 
-const configuration = new Configuration({
+// const configuration = new Configuration({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 // create LINE SDK config from env variables
 const config = {
@@ -42,7 +45,7 @@ app.post('/callback', line.middleware(config), (req, res) => {
 });
 
 // event handler
-function handleEvent(event) {
+async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
