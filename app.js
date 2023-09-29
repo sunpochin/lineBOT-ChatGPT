@@ -42,16 +42,12 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  // create an echoing text message
+  // create a echoing text message
   const echo = { type: 'text', text: event.message.text };
 
   // use reply API
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [echo],
-  });
+  return client.replyMessage(event.replyToken, echo);
 }
-
 // listen on port
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
