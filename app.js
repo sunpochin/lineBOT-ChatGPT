@@ -2,6 +2,12 @@ require('dotenv').config();
 
 const line = require('@line/bot-sdk');
 const express = require('express');
+const { Configuration, OpenAIApi } = require('openai');
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 // create LINE SDK config from env variables
 const config = {
@@ -42,11 +48,22 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: event.message.text ,
+  });
+
   // create a echoing text message
-  const echo = { type: 'text', text: event.message.text };
+  const echo = { type: 'text', text: completion.data.choices[0].text };
 
   // use reply API
   return client.replyMessage(event.replyToken, echo);
+
+  // // create a echoing text message
+  // const echo = { type: 'text', text: event.message.text };
+
+  // // use reply API
+  // return client.replyMessage(event.replyToken, echo);
 }
 // listen on port
 const port = process.env.PORT || 3000;
